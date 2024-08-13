@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model AllFields {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?   @default("")
+  password       String?   @default(uuid())
+  age            Int?      @default(0)
+  email          String?   @default("")
+  phone          String?   @default("")
+  content        String?   @default("")
+  date           DateTime? @default(now())
+  switch         Boolean?  @default(false)
+  checkbox       Boolean?  @default(false)
+  select         String?   @default("")
+  multiSelect    String[]  @default([])
+  radio          String?   @default("1")
+  toogle         String?   @default("1")
+  lists          String[]  @default([])
+  markdown       String?   @default("")
+  url            String?   @default("")
+  file           String?   @default("")
+  redirectButton String?   @default("")
+}
+
+model Blog {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  title   String
+  content String
+  tags    String[]
+
+  comments Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([title])
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId    String   @db.ObjectId
+}
